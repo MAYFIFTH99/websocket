@@ -8,10 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoom {
 
     @Id
