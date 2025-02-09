@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @RequiredArgsConstructor
 
-public class WebSocketConfiguration implements WebSocketConfigurer {
+public class WebSocketConfig implements WebSocketConfigurer {
 
     private final WebSocketChatHandler webSocketChatHandler;
 
