@@ -2,15 +2,40 @@ spring:
   application:
     name: websocket-chat
 
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/chat_service
+    username: chat_service_user
+    password: chat_service_user
+
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: d427c0410a48c5140c17e1a48d437148
-            client-secret: JRhzxNUj6SVWcbiaoMqdNhaAoqFEUuQO
+            client-id: b8c3ca6809a9218f5246f7e41092fca3
+            client-secret: C3nmNRLXuB4xCFTDcGJtcYHktsXr32bJ
             scope:
               - profile_nickname
+              - account_email
+              - name
+              - gender
+              - birthday
+              - birthyear
+              - phone_number
             redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
             client-name: kakao
             authorization-grant-type: authorization_code
