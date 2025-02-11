@@ -1,3 +1,10 @@
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      enabled: true
+      force: true
+
 spring:
   application:
     name: websocket-chat
@@ -6,8 +13,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3308/chat_service
-    username: chat_service_user
-    password: chat_service_user
+    username: service_user
+    password: service_user
 
 
   jpa:
