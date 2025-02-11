@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,6 +35,12 @@ public class ChatRoom {
 
     private LocalDateTime createdAt;
 
+    @Transient
+    private Boolean hasNewMessage;
+
+    public void setHasNewMessage(Boolean hasNewMessage) {
+        this.hasNewMessage = hasNewMessage;
+    }
 
     public MemberChatRoomMapping addMember(Member member){
         if (memberChatRoomMappings == null) {

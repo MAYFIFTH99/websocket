@@ -1,7 +1,5 @@
 package fastcampus.websocketchat.controller;
 
-import static java.util.stream.Collectors.toList;
-
 import fastcampus.websocketchat.dto.ChatMessage;
 import fastcampus.websocketchat.dto.ChatRoomDto;
 import fastcampus.websocketchat.entity.ChatRoom;
@@ -36,9 +34,9 @@ public class ChatController {
 
     @PostMapping("/{chatRoomId}")
     public Boolean joinChatRoom(@AuthenticationPrincipal CustomOAuth2User user,
-            @PathVariable Long chatRoomId) {
+            @PathVariable Long chatRoomId, @RequestParam(required = false) Long currentChatroomId) {
 
-        return chatService.joinChatRoom(user.getMember(), chatRoomId);
+        return chatService.joinChatRoom(user.getMember(), chatRoomId, currentChatroomId);
     }
 
     @DeleteMapping("/{chatRoomId}")
@@ -50,7 +48,7 @@ public class ChatController {
 
     @GetMapping
     public List<ChatRoomDto> getChatRoomList(@AuthenticationPrincipal CustomOAuth2User user) {
-        List<ChatRoom> joinedChatRooms = chatService.getJoinedChatRooms(user.getMember());
+        List<ChatRoom> joinedChatRooms = chatService.getChatroomList(user.getMember());
 
         return joinedChatRooms.stream().map(ChatRoomDto::from).toList();
     }

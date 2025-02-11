@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,5 +41,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private LocalDateTime lastCheckedAt;
 
 }
