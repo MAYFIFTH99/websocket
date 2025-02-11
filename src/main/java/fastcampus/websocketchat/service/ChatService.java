@@ -37,13 +37,16 @@ public class ChatService {
         return savedChatRoom;
     }
 
-    public Boolean joinChatRoom(Member member, Long chatRoomId){
+    public Boolean joinChatRoom(Member member, Long newChatroomId, Long currentChatroomId) {
+        if(currentChatroomId != null){
+            updateLastCheckedAt(member, currentChatroomId);
+        }
         if (jpaMemberChatRoomMappingRepository.existsByMemberIdAndChatRoomId(member.getId(),
-                chatRoomId)) {
+                newChatroomId)) {
             log.info("이미 채팅방에 참여하고 있습니다.");
             return false;
         }
-        ChatRoom findChatRoom = jpaChatRoomRepository.findById(chatRoomId)
+        ChatRoom findChatRoom = jpaChatRoomRepository.findById(newChatroomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
 
         MemberChatRoomMapping savedMemberChatMapping = MemberChatRoomMapping.builder()
@@ -53,6 +56,12 @@ public class ChatService {
         jpaMemberChatRoomMappingRepository.save(savedMemberChatMapping);
 
         return true;
+    }
+
+    private void updateLastCheckedAt(Member member, Long currentChatroomId) {
+        MemberChatRoomMapping memberChatRoomMapping = jpaMemberChatRoomMappingRepository.findByMemberIdAndChatRoomId(member.getId(), currentChatroomId).get();
+        memberChatRoomMapping.updateLastCheckedAt();
+        jpaMemberChatRoomMappingRepository.save(memberChatRoomMapping);
     }
 
     @Transactional
@@ -68,12 +77,16 @@ public class ChatService {
         return true;
     }
 
-    public List<ChatRoom> getJoinedChatRooms(Member member){
-        List<MemberChatRoomMapping> chatRoomList = jpaMemberChatRoomMappingRepository.findAllByMemberId(
+    public List<ChatRoom> getChatroomList(Member member){
+        List<MemberChatRoomMapping> memgerChatroomMappingList = jpaMemberChatRoomMappingRepository.findAllByMemberId(
                 member.getId());
 
-        return chatRoomList.stream()
-                .map(MemberChatRoomMapping::getChatRoom)
+        return memgerChatroomMappingList.stream()
+                .map(memberChatroomMapping ->{
+                    ChatRoom chatroom = memberChatroomMapping.getChatRoom();
+                    chatroom.setHasNewMessage(jpaMessageRepository.existsByChatRoomIdAndCreatedAtAfter(chatroom.getId(), member.getLastCheckedAt()));
+                    return chatroom;
+                })
                 .toList();
     }
 
@@ -84,6 +97,7 @@ public class ChatService {
                 .member(member)
                 .chatRoom(chatRoom)
                 .text(text)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return jpaMessageRepository.save(message);

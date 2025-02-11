@@ -3,6 +3,7 @@ package fastcampus.websocketchat.repository.jpa;
 import fastcampus.websocketchat.entity.ChatRoom;
 import fastcampus.websocketchat.entity.MemberChatRoomMapping;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaMemberChatRoomMappingRepository extends JpaRepository<MemberChatRoomMapping, Long> {
@@ -12,4 +13,6 @@ public interface JpaMemberChatRoomMappingRepository extends JpaRepository<Member
     void deleteByMemberIdAndChatRoomId(Long id, Long chatRoomId);
 
     List<MemberChatRoomMapping> findAllByMemberId(Long memberId);
+
+    Optional<MemberChatRoomMapping> findByMemberIdAndChatRoomId(Long memberId, Long currentChatroomId);
 }
