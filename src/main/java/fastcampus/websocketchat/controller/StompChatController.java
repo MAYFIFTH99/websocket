@@ -1,26 +1,38 @@
 package fastcampus.websocketchat.controller;
 
 import fastcampus.websocketchat.dto.ChatMessage;
+import fastcampus.websocketchat.entity.Message;
+import fastcampus.websocketchat.service.ChatService;
+import fastcampus.websocketchat.vo.CustomOAuth2User;
 import java.security.Principal;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class StompChatController {
 
-    @MessageMapping("/chats") // /pub/chats
-    @SendTo("/sub/chats")
+    private final ChatService chatService;
+
+    @MessageMapping("/chats/{chatroomId}") // /pub/chats
+    @SendTo("/sub/chats/{chatroomId}")
     public ChatMessage handleMessage(@AuthenticationPrincipal Principal principal,
+            @DestinationVariable Long chatroomId,
             @Payload Map<String, String> payload) {
 
-        log.info("{} sent {}", principal.getName(), payload);
-
+        log.info("{} sent {} in {}", principal.getName(), payload, chatroomId);
+        CustomOAuth2User user = (CustomOAuth2User) ((OAuth2AuthenticationToken) principal).getPrincipal();
+        chatService.saveMessage(user.getMember(), chatroomId, payload.get("message"));
         return new ChatMessage(principal.getName(), payload.get("message"));
     }
 }

@@ -1,6 +1,11 @@
 package fastcampus.websocketchat.controller;
 
+import static java.util.stream.Collectors.toList;
+
+import fastcampus.websocketchat.dto.ChatMessage;
+import fastcampus.websocketchat.dto.ChatRoomDto;
 import fastcampus.websocketchat.entity.ChatRoom;
+import fastcampus.websocketchat.entity.Message;
 import fastcampus.websocketchat.service.ChatService;
 import fastcampus.websocketchat.vo.CustomOAuth2User;
 import java.util.List;
@@ -22,10 +27,11 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping
-    public ChatRoom createChatRoom(@AuthenticationPrincipal CustomOAuth2User user,
+    public ChatRoomDto createChatRoom(@AuthenticationPrincipal CustomOAuth2User user,
             @RequestParam String title) {
 
-        return chatService.createChatRoom(user.getMember(), title);
+        ChatRoom chatRoom = chatService.createChatRoom(user.getMember(), title);
+        return ChatRoomDto.from(chatRoom);
     }
 
     @PostMapping("/{chatRoomId}")
@@ -42,9 +48,19 @@ public class ChatController {
         return chatService.leaveChatRoom(user.getMember(), chatRoomId);
     }
 
-    @GetMapping("/{memberId}")
-    public List<ChatRoom> getChatRoomList(@AuthenticationPrincipal CustomOAuth2User user) {
-        return chatService.getJoinedChatRooms(user.getMember());
+    @GetMapping
+    public List<ChatRoomDto> getChatRoomList(@AuthenticationPrincipal CustomOAuth2User user) {
+        List<ChatRoom> joinedChatRooms = chatService.getJoinedChatRooms(user.getMember());
+
+        return joinedChatRooms.stream().map(ChatRoomDto::from).toList();
     }
 
+    @GetMapping("/{chatRoomId}/messages")
+    public List<ChatMessage> getMessageList(@PathVariable Long chatRoomId) {
+        List<Message> messageList = chatService.getMessageList(chatRoomId);
+        return messageList.stream().map(
+                message ->
+                        new ChatMessage(message.getMember().getNickname(), message.getText())
+        ).toList();
+    }
 }

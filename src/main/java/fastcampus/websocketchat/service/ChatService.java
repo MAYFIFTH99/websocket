@@ -3,13 +3,16 @@ package fastcampus.websocketchat.service;
 import fastcampus.websocketchat.entity.ChatRoom;
 import fastcampus.websocketchat.entity.Member;
 import fastcampus.websocketchat.entity.MemberChatRoomMapping;
+import fastcampus.websocketchat.entity.Message;
 import fastcampus.websocketchat.repository.jpa.JpaChatRoomRepository;
 import fastcampus.websocketchat.repository.jpa.JpaMemberChatRoomMappingRepository;
+import fastcampus.websocketchat.repository.jpa.JpaMessageRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +21,7 @@ public class ChatService {
 
     private final JpaChatRoomRepository jpaChatRoomRepository;
     private final JpaMemberChatRoomMappingRepository jpaMemberChatRoomMappingRepository;
+    private final JpaMessageRepository jpaMessageRepository;
 
     // 채팅방 생성
     public ChatRoom createChatRoom(Member member, String title){
@@ -27,10 +31,7 @@ public class ChatService {
                 .build();
         ChatRoom savedChatRoom = jpaChatRoomRepository.save(chatRoom);
 
-        MemberChatRoomMapping memberChatRoomMapping = MemberChatRoomMapping.builder()
-                .chatRoom(savedChatRoom)
-                .member(member)
-                .build();
+        MemberChatRoomMapping memberChatRoomMapping = chatRoom.addMember(member);
         jpaMemberChatRoomMappingRepository.save(memberChatRoomMapping);
 
         return savedChatRoom;
@@ -54,6 +55,7 @@ public class ChatService {
         return true;
     }
 
+    @Transactional
     public Boolean leaveChatRoom(Member member, Long chatRoomId){
         if (!jpaMemberChatRoomMappingRepository.existsByMemberIdAndChatRoomId(member.getId(),
                 chatRoomId)) {
@@ -73,5 +75,21 @@ public class ChatService {
         return chatRoomList.stream()
                 .map(MemberChatRoomMapping::getChatRoom)
                 .toList();
+    }
+
+    public Message saveMessage(Member member, Long chatRoomId, String text){
+        ChatRoom chatRoom = jpaChatRoomRepository.findById(chatRoomId).get();
+
+        Message message = Message.builder()
+                .member(member)
+                .chatRoom(chatRoom)
+                .text(text)
+                .build();
+
+        return jpaMessageRepository.save(message);
+    }
+
+    public List<Message> getMessageList(Long chatRoomId){
+        return jpaMessageRepository.findAllByChatRoomId(chatRoomId);
     }
 }
