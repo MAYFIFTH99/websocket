@@ -1,5 +1,6 @@
 package fastcampus.websocketchat.entity;
 
+import fastcampus.websocketchat.enums.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @Entity
@@ -32,6 +34,7 @@ public class Member {
     private String email;
     private String nickname;
     private String name;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -43,4 +46,12 @@ public class Member {
 
     private LocalDateTime lastCheckedAt;
 
+    public void updatePassword(String password, String confirmedPassword,
+            PasswordEncoder passwordEncoder) {
+        if (!password.equals(confirmedPassword)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+        }
+        this.password = passwordEncoder.encode(password);
+
+    }
 }
