@@ -47,6 +47,12 @@ spring:
             client-name: kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
+          google:
+            client-id: 1040303227006-600p283avdk27j5vhojo66nt1oqmmjqp.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - profile
+              - email
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
