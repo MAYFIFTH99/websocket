@@ -31,7 +31,6 @@ public record MemberDto(
                 member.getPhoneNumber(),
                 member.getBirthDay(),
                 member.getRole()
-
         );
     }
 
