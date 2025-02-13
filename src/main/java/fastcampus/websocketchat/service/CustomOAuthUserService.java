@@ -1,6 +1,6 @@
 package fastcampus.websocketchat.service;
 
-import fastcampus.websocketchat.entity.Gender;
+import fastcampus.websocketchat.enums.Gender;
 import fastcampus.websocketchat.entity.Member;
 import fastcampus.websocketchat.entity.Role;
 import fastcampus.websocketchat.repository.jpa.JpaMemberRepository;
