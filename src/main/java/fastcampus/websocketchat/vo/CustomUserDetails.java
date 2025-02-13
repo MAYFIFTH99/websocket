@@ -3,17 +3,18 @@ package fastcampus.websocketchat.vo;
 import fastcampus.websocketchat.entity.Member;
 import java.util.Collection;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import java.util.Map;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
-@AllArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails extends CustomOAuth2User implements UserDetails {
 
-    private Member member;
+    public CustomUserDetails(Member member, Map<String, Object> attributeMap) {
+        super(member, attributeMap);
+    }
 
 
     @Override
