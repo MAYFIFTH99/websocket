@@ -1,5 +1,6 @@
 package fastcampus.websocketchat.service;
 
+import fastcampus.websocketchat.dto.ChatRoomDto;
 import fastcampus.websocketchat.entity.ChatRoom;
 import fastcampus.websocketchat.entity.Member;
 import fastcampus.websocketchat.entity.MemberChatRoomMapping;
@@ -107,7 +108,9 @@ public class ChatService {
         return jpaMessageRepository.findAllByChatRoomId(chatRoomId);
     }
 
-    public ChatRoom getChatRoom(Long chatRoomId){
-        return jpaChatRoomRepository.findById(chatRoomId).get();
+    @Transactional(readOnly = true)
+    public ChatRoomDto getChatRoom(Long chatRoomId){
+        ChatRoom chatRoom = jpaChatRoomRepository.findById(chatRoomId).get();
+        return ChatRoomDto.from(chatRoom);
     }
 }
