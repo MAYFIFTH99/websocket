@@ -121,7 +121,7 @@ function enterChatroom(chatroomId, newMember) {
   $("#leave").prop("disabled", false);
   toggleNewMessageIcon(chatroomId, false);
 
-  if (subscription !== undefined) {
+  if (subscription != undefined) {
     subscription.unsubscribe();
   }
 
@@ -182,7 +182,7 @@ function joinChatroom(chatroomId) {
 }
 
 function getRequestParam(currentChatroomId) {
-  if (currentChatroomId === "") {
+  if (currentChatroomId == "") {
     return "";
   }
 
