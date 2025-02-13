@@ -37,8 +37,7 @@ public class StompChatController {
         CustomOAuth2User user = (CustomOAuth2User) ((AbstractAuthenticationToken) principal).getPrincipal();
         Message message = chatService.saveMessage(user.getMember(), chatroomId,
                 payload.get("message"));
-        ChatRoomDto chatRoomDto = ChatRoomDto.from(chatService.getChatRoom(chatroomId));
-        messagingTemplate.convertAndSend("/sub/chats/new/", chatroomId);
+        messagingTemplate.convertAndSend("/sub/chats/updates", chatService.getChatRoom(chatroomId));
         return new ChatMessage(principal.getName(), payload.get("message"));
     }
 }
