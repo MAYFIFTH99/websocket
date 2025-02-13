@@ -1,6 +1,7 @@
 package fastcampus.websocketchat.controller;
 
 import fastcampus.websocketchat.dto.ChatMessage;
+import fastcampus.websocketchat.dto.ChatRoomDto;
 import fastcampus.websocketchat.entity.Message;
 import fastcampus.websocketchat.service.ChatService;
 import fastcampus.websocketchat.vo.CustomOAuth2User;
@@ -36,7 +37,7 @@ public class StompChatController {
         CustomOAuth2User user = (CustomOAuth2User) ((AbstractAuthenticationToken) principal).getPrincipal();
         Message message = chatService.saveMessage(user.getMember(), chatroomId,
                 payload.get("message"));
-
+        ChatRoomDto chatRoomDto = ChatRoomDto.from(chatService.getChatRoom(chatroomId));
         messagingTemplate.convertAndSend("/sub/chats/new/", chatroomId);
         return new ChatMessage(principal.getName(), payload.get("message"));
     }

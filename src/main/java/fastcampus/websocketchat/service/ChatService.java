@@ -106,4 +106,8 @@ public class ChatService {
     public List<Message> getMessageList(Long chatRoomId){
         return jpaMessageRepository.findAllByChatRoomId(chatRoomId);
     }
+
+    public ChatRoom getChatRoom(Long chatRoomId){
+        return jpaChatRoomRepository.findById(chatRoomId).get();
+    }
 }

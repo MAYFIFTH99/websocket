@@ -11,6 +11,8 @@ import fastcampus.websocketchat.vo.CustomUserDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,9 +54,9 @@ public class ConsultantService implements UserDetailsService {
 
     @ResponseBody
     @GetMapping
-    public List<ChatRoomDto> getAllChatrooms(){
-        List<ChatRoom> chatroomList = jpaChatRoomRepository.findAll();
-        return chatroomList.stream().map(ChatRoomDto::from).toList();
+    public Page<ChatRoomDto> getAllChatrooms(Pageable pageable) {
+        Page<ChatRoom> chatroomList = jpaChatRoomRepository.findAll(pageable);
+        return chatroomList.map(ChatRoomDto::from);
     }
 
 }
